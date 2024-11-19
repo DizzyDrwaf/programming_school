@@ -1,4 +1,4 @@
 Olivers Loggbok
 ===============
 24-11-19
-[dekryptering]
+[dekryptering](/intro_programmering/7100/4d.py)
