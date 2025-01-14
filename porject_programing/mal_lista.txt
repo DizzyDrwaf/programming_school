@@ -1,0 +1,12 @@
+
+1. skapa en kort lek och något som kan omvandla dem till numeriska värden och tillbacka.
+
+2. skapa ett sätt att räkna om korten går över 21 och om den är soft eller inte. 
+
+3. skapa en input som spelaren kan använde för att hit eller stand. 
+
+4. skapa en "AI" som "delar ut" kort till spelaren och en själv. 
+
+5. skapa möjlighet att splita vid tillfällen att spelaren har fåt båda korten med samma nummer på dem. 
+
+
