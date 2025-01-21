@@ -6,3 +6,6 @@ Olivers Loggbok
 25-01-14
 börjat med [black_jack](/porject_programing/black_jack.py)
 ---------
+25-01-20
+arbetade med [black_jack](/porject_programing/black_jack.py).
+---------
