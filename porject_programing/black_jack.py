@@ -63,38 +63,37 @@ def blackjack(score):
     
     return game_over 
 
-def hit_or_stand(player_picked):
-    
-    if player_picked.lower() == "hit" or player_picked.lower() == "h":
+def hit():
         hand.append(deck.pop())
         if count_hand() > 21:
             who_won = "dealer"
             return who_won
         
-        if count_dealer() < 16:
-            dealer_hand.append(deck.pop())
-            
-            if count_dealer() > 21:
-                who_won = "player"
-                return who_won
+def stand():
 
-    elif player_picked.lower() == "stand" or player_picked.lower() == "s":
-        if count_dealer() < 17:
+
+    while count_dealer() < 17:
             dealer_hand.append(deck.pop())
-        else:
-            if count_dealer() < count_hand():
-                who_won = "player"
-                return who_won
-            else:
-                who_won = "dealer"
-                return who_won
+
+    if count_dealer() > 21:
+        who_won = "player"
+        return who_won
+
+    if count_dealer() < count_hand():
+        who_won = "player"
+        return who_won
+    else:
+        who_won = "dealer"
+        return who_won
                 
-                if player_win == True:
-                    who_won = "player"
-                elif dealer_win == True:
-                    who_won = "dealer"
-
-                return who_won
+def print_hand(han):
+    return_hand = ""
+    for w in han:
+        for v in w:
+            return_hand += v
+            return_hand += " "
+        return_hand += ", "
+    return return_hand
     
 
 
@@ -141,18 +140,18 @@ while play.lower() == "y":
     
     print(" ")
 
-    print("Dealers Hand: ",dealer_hand)
+    print("Dealers Hand: ",print_hand(dealer_hand))
     print("Dealers Hand Value",count_dealer())
 
     print(" ")
 
-    print("Your Hand: ",hand)
+    print("Your Hand: ",print_hand(hand))
     print("Your Hand Value: " ,count_hand())
 
     print(" ")
 
 
-
+    first_stand = True
 
     while who_won != "player" or who_won != "dealer":
 
@@ -164,16 +163,24 @@ while play.lower() == "y":
             print("Dealer Wins :'(")
             break
 
-        who_won = hit_or_stand(input("Hit or Stand?: "))
 
+        if first_stand == True:
+            hors = str(input("Hit or Stand?: "))
+            if hors.lower() == "hit" or hors.lower() == "h":
+                who_won = hit()
+            elif hors.lower() == "stand" or hors.lower() == "s":    
+                who_won = stand()
+                first_stand = False
+        
+        
         print(" ")
 
-        print("Dealers Hand: ",dealer_hand)
+        print("Dealers Hand: ", print_hand(dealer_hand))
         print("Dealers Hand Value",count_dealer())
 
         print(" ")
 
-        print("Your Hand: ",hand)
+        print("Your Hand: ",print_hand(hand))
         print("Your Hand Value: " ,count_hand())
 
         print(" ")
@@ -181,10 +188,10 @@ while play.lower() == "y":
 
 
         if who_won == "player":
-            print("WOW")
+            print("player won!")
             break
         elif who_won == "dealer": 
-            print("SAD")
+            print("Dealer won!")
             break
 
 
