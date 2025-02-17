@@ -15,3 +15,6 @@ gjorde klart spelet så det är fult spelbart men har ingen att beta med än [bl
 25-02-04
 gjorde klart så spelaet är helt spelbart har inget som man kan sattsa doc [blcak_jack](/porject_programing/black_jack.py)
 ---------
+25-02-17
+börjat med [pygame](/pygame/)
+---------
