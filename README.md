@@ -18,3 +18,6 @@ gjorde klart så spelaet är helt spelbart har inget som man kan sattsa doc [blc
 25-02-17
 börjat med [pygame](/pygame/)
 ---------
+25-02-18
+fick en orm att vända sig on och gå åt höger när man trycker på högre pil tagenten [pygame](/pygame/pygame_3.py)
+---------
