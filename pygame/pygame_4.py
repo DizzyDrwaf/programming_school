@@ -119,7 +119,7 @@ while not done:
             done = True
     
         # Chance of having a new plum.
-    if (random.randint(0, 500) < 2):
+    if (random.randint(0, 200) < 2):
         cherry_x = random.randint(0, 600)
         # Add plum coodinates to the list.
         cherries.append([cherry_x, 0, 0]) # x, y, speed
@@ -141,6 +141,7 @@ while not done:
         screen.blit(plum_image, [plum[0], plum[1]])
     for cherry in cherries:
         screen.blit(cherry_image, (cherry[0], cherry[1]))
+    screen.blit(font.render("Score: " + str(score), True, WHITE), [5, 5])
 
  
     # --- Go ahead and update the screen with what we've drawn.
