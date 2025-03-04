@@ -112,12 +112,17 @@ while not done:
     for cherry in cherries[:]:
         cherry[1] += cherry[2]
         cherry[2] += 0.2
-        if cherry[1] > HEIGHT:
+        if cherry[1] > 800:
             cherries.remove(cherry)
         if collides(snake_x, snake_y, snake_radius, cherry[0], cherry[1], cherry_radius):
             print("Game Over! Poisonous Cherry!")
             done = True
-        
+    
+        # Chance of having a new plum.
+    if (random.randint(0, 500) < 2):
+        cherry_x = random.randint(0, 600)
+        # Add plum coodinates to the list.
+        cherries.append([cherry_x, 0, 0]) # x, y, speed
 
         
     
