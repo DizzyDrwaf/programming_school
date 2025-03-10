@@ -2,6 +2,7 @@
 Uses Sprite object insted of list och dictionary to store each plum.
 
 
+
 Tasks
 
 1. Make the snake move properly.
@@ -30,78 +31,102 @@ pygame.init()
 # Set the width and height of the screen [width, height]
 size = (600, 800)
 screen = pygame.display.set_mode(size)
+
+# Score
+score = 0
+font = pygame.font.Font(None, 36)
  
 pygame.display.set_caption("My Game")
 
 # Add visual elements to the game
-snake = pygame.sprite.Sprite()
-snake.image = pygame.image.load("img/snake.png")
-snake.rect = snake.image.get_rect()
-snake.rect.x = 50
-snake.rect.y = 700
-snake.last_direction = "right"
-snake.radius = (snake.image.get_width() + snake.image.get_height()) / 4
+snake_image = pygame.image.load("pygame/img/snake.png")
+snake_x = 50
+snake_y = 700
+snake_last_direction = "right"
+snake_radius = (snake_image.get_width() + snake_image.get_height()) / 4
 
-
-plum_image = pygame.image.load("img/plum.png")
-plums = pygame.sprite.Group()
+plum_image = pygame.image.load("pygame/img/plum.png")
+cherry_image = pygame.image.load("pygame/img/cherries.png")
+plums = []
+cherries = []
 plum_radius = (plum_image.get_width() + plum_image.get_height()) / 4
+cherry_radius = (cherry_image.get_width() + cherry_image.get_height()) / 4
+
+
+ 
+# Loop until the user clicks the close button.
+done = False
  
 # Used to manage how fast the screen updates
 clock = pygame.time.Clock()
- 
-# Loop until the user clicks the close button.
-is_running = True
 
+#score
+score = 0
+ 
 # -------- Main Program Loop -----------
-while is_running:
+while not done:
     # --- Main event loop
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            is_running = False
+            done = True
  
     # --- Game logic should go here
     keys = pygame.key.get_pressed()
     if keys[pygame.K_LEFT]:
-        snake.rect.x -= 5
-        if (snake.last_direction == "right"):
-            snake.image = pygame.transform.flip(snake.image, True, False)
-            snake.last_direction = "left"
+        snake_x -= 5
+        if (snake_last_direction == "right"):
+            snake_image = pygame.transform.flip(snake_image, True, False)
+            snake_last_direction = "left"
         # Wrap the snake around the screen.
-        if snake.rect.x < 0:
-            snake.rect.x = 600
+        if snake_x < 0:
+            snake_x = 600
+
+    if keys[pygame.K_RIGHT]:
+        snake_x += 5
+        if (snake_last_direction == "left"):
+            snake_image = pygame.transform.flip(snake_image, True, False)
+            snake_last_direction = "right"
+        # Wrap the snake around the screen.
+        if snake_x > 600:
+            snake_x = 0
 
     # plums
     # Chance of having a new plum.
     if (random.randint(0, 100) < 2):
         plum_x = random.randint(0, 600)
         # Add plum coodinates to the list.
-        plum = pygame.sprite.Sprite()
-        plum_width = random.randint(20, 40)
-        plum_radio = plum_image.get_height() / plum_image.get_width()
-        plum.image = pygame.transform.scale(plum_image, (plum_width, plum_width * plum_radio)) 
-        plum.rect = plum.image.get_rect()
-        plum.rect.x = plum_x
-        plum.rect.y = 0
-        plum.speed = 0
-        plum.radius = (plum.image.get_width() + plum.image.get_height()) / 4
-        plums.add(plum) # x, y, speed
+        plums.append([plum_x, 0, 0]) # x, y, speed
     
     # move plums
     for plum in plums:
         # Move the plum down.
-        plum.rect.y += plum.speed
+        plum[1] += plum[2]
         # Increase the speed of the plum.
-        plum.speed += 0.2
+        plum[2] += 0.2
         # Remove plums that have gone off the screen.
-        if plum.rect.y > 800:
+        if plum[1] > 800:
             plums.remove(plum)
         # Check for collisions with the snake.
-        plum = pygame.sprite.spritecollideany(snake, plums)
-        if plum != None:
+        if collides(snake_x, snake_y, snake_radius, 
+                    plum[0], plum[1], plum_radius):
             plums.remove(plum)
+            score += 1
             print("Yum!")
-        
+
+    for cherry in cherries[:]:
+        cherry[1] += cherry[2]
+        cherry[2] += 0.2
+        if cherry[1] > 800:
+            cherries.remove(cherry)
+        if collides(snake_x, snake_y, snake_radius, cherry[0], cherry[1], cherry_radius):
+            print("Game Over! Poisonous Cherry!")
+            done = True
+    
+        # Chance of having a new plum.
+    if (random.randint(0, 200) < 2):
+        cherry_x = random.randint(0, 600)
+        # Add plum coodinates to the list.
+        cherries.append([cherry_x, 0, 0]) # x, y, speed
 
         
     
@@ -115,9 +140,13 @@ while is_running:
     screen.fill(GREEN)
  
     # --- Drawing code should go here
-    screen.blit(snake.image, snake.rect)
+    screen.blit(snake_image, [snake_x, snake_y])
     for plum in plums:
-        screen.blit(plum.image, plum.rect)
+        screen.blit(plum_image, [plum[0], plum[1]])
+    for cherry in cherries:
+        screen.blit(cherry_image, (cherry[0], cherry[1]))
+    screen.blit(font.render("Score: " + str(score), True, WHITE), [5, 5])
+
  
     # --- Go ahead and update the screen with what we've drawn.
     pygame.display.flip()
@@ -125,5 +154,4 @@ while is_running:
     # --- Limit to 60 frames per second
     clock.tick(60)
  
-# Clean up when the game exits.
-pygame.quit()
+# Close the window and quit.
