@@ -40,7 +40,7 @@ bird_last_direction = "right"
 box = pygame.Rect(100, 100, 200, 200)
 box_color = GREEN
 
-box_2 = pygame.Rect(300, 300, 200, 200)
+box_2 = pygame.Rect(400, 300, 200, 200)
 box_2_color = GREEN
 
 
