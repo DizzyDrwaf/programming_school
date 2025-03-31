@@ -23,7 +23,7 @@ import pygame
 
 
 # --- Define helper functions
-def get_one_colliding_object(object_1, objects):
+def get_one_colliding_objects(object_1, objects):
     '''Returns the first object in the list of objects
     that collides with object_1.
     Returns None if no object collides.'''
@@ -33,6 +33,17 @@ def get_one_colliding_object(object_1, objects):
         if obj_1_rect.colliderect(obj_2_rect):
             return object_2
     return None
+
+def get_one_colliding_object(object_1, objects):
+    '''Returns the first object in the list of objects
+    that collides with object_1.
+    Returns None if no object collides.'''
+    obj_1_rect = pygame.Rect(object_1['x'], object_1['y'], object_1['image'].get_width(), object_1['image'].get_height())
+    obj_2_rect = pygame.Rect(objects['x'], objects['y'], objects['image'].get_width(), objects['image'].get_height())
+    if obj_1_rect.colliderect(obj_2_rect):
+        return objects
+    return None
+
 
 # --- Initialize Pygame
 pygame.init()
@@ -62,6 +73,9 @@ doors = []
 
 chrystal_size = chrystal_image.get_width()
 chrystals = []
+
+ogre_size = ogre_image.get_width()
+ogres = []
 
 # Create the player
 player = {}
@@ -100,6 +114,12 @@ while len(line) > 1:
             door['y'] = y
             door['image'] = door_image
             doors.append(door)
+        elif char == 'o':
+            ogre = {}
+            ogre['x'] = x
+            ogre['y'] = y
+            ogre['image'] = ogre_image
+            ogres.append(ogre)
 
         x += wall_size
     x = 0
@@ -118,6 +138,7 @@ score = 0
 font = pygame.font.Font(None, 36)
 
 last_door = "top"
+is_outside_door = True
 
 # --- Set the width and height of the screen [width, height]
 size = (maze_width * wall_size, maze_height * wall_size)
@@ -149,20 +170,28 @@ while is_running:
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT]:
             player['x'] -= player['speed']
-            if get_one_colliding_object(player, walls):
+            if get_one_colliding_objects(player, walls):
                 player['x'] += player['speed']
-            elif get_one_colliding_object(player, chrystals):
+
+            elif get_one_colliding_objects(player, chrystals):
                 score += 1
-                chrystals.remove(get_one_colliding_object(player, chrystals))
-            elif get_one_colliding_object(player, doors):
-                if last_door == "top":
-                    player['x'] = wall_size * 10
-                    player['y'] = wall_size * 9
-                    last_door = "bottom"
-                elif last_door == "bottom":
-                    player['x'] = wall_size * 5
-                    player['y'] = wall_size * 5
-                    last_door = "top"
+                chrystals.remove(get_one_colliding_objects(player, chrystals))
+
+            elif get_one_colliding_objects(player, doors):
+                if is_outside_door == True:
+                    is_outside_door = False
+                    # kolla spelarens x och y, hitta samma dörr
+                    if get_one_colliding_object(player, doors[0]):
+                        player['x'] = wall_size * 10
+                        player['y'] = wall_size * 9
+                        is_outside_door = False
+                    elif get_one_colliding_object(player, doors[1]):
+                        player['x'] = wall_size * 5
+                        player['y'] = wall_size * 5
+                        is_outside_door = False
+            else:
+                # utanför dörr
+                is_outside_door = True
 
             if (player_last_direction == "right"):
                 player_image = pygame.transform.flip(player_image, True, False)
@@ -170,44 +199,82 @@ while is_running:
 
         elif keys[pygame.K_RIGHT]:
             player['x'] += player['speed']
-            if get_one_colliding_object(player, walls):
+            if get_one_colliding_objects(player, walls):
                 player['x'] -= player['speed']
-            elif get_one_colliding_object(player, chrystals):
-                score += 1
-                chrystals.remove(get_one_colliding_object(player, chrystals))
 
-            
+            elif get_one_colliding_objects(player, chrystals):
+                score += 1
+                chrystals.remove(get_one_colliding_objects(player, chrystals))
+
+            elif get_one_colliding_objects(player, doors):
+                if is_outside_door == True:
+                    is_outside_door = False
+                    # kolla spelarens x och y, hitta samma dörr
+                    if get_one_colliding_object(player, doors[0]):
+                        player['x'] = wall_size * 10
+                        player['y'] = wall_size * 9
+                        is_outside_door = False
+                    elif get_one_colliding_object(player, doors[1]):
+                        player['x'] = wall_size * 5
+                        player['y'] = wall_size * 5
+                        is_outside_door = False
+            else:
+                # utanför dörr
+                is_outside_door = True
+
             if (player_last_direction == "left"):
                 player_image = pygame.transform.flip(player_image, True, False)
                 player_last_direction = "right"
 
         elif keys[pygame.K_UP]:
             player['y'] -= player['speed']
-            if get_one_colliding_object(player, walls):
+            if get_one_colliding_objects(player, walls):
                 player['y'] += player['speed']
 
-            elif get_one_colliding_object(player, chrystals):
+            elif get_one_colliding_objects(player, chrystals):
                 score += 1
-                chrystals.remove(get_one_colliding_object(player, chrystals))
-            elif get_one_colliding_object(player, doors):
-                if last_door == "top":
-                    player['x'] = wall_size * 10
-                    player['y'] = wall_size * 9
-                    last_door = "bottom"
-                elif last_door == "bottom":
-                    player['x'] = wall_size * 5
-                    player['y'] = wall_size * 5
-                    last_door = "top"
+                chrystals.remove(get_one_colliding_objects(player, chrystals))
+
+            elif get_one_colliding_objects(player, doors):
+                if is_outside_door == True:
+                    is_outside_door = False
+                    # kolla spelarens x och y, hitta samma dörr
+                    if get_one_colliding_object(player, doors[0]):
+                        player['x'] = wall_size * 10
+                        player['y'] = wall_size * 9
+                        is_outside_door = False
+                    elif get_one_colliding_object(player, doors[1]):
+                        player['x'] = wall_size * 5
+                        player['y'] = wall_size * 5
+                        is_outside_door = False
+            else:
+                # utanför dörr
+                is_outside_door = True
 
         elif keys[pygame.K_DOWN]:
             player['y'] += player['speed']
-            if get_one_colliding_object(player, walls):
+            if get_one_colliding_objects(player, walls):
                 player['y'] -= player['speed']
 
-            elif get_one_colliding_object(player, chrystals):
+            elif get_one_colliding_objects(player, chrystals):
                 score += 1
-                chrystals.remove(get_one_colliding_object(player, chrystals))
+                chrystals.remove(get_one_colliding_objects(player, chrystals))
 
+            elif get_one_colliding_objects(player, doors):
+                if is_outside_door == True:
+                    is_outside_door = False
+                    # kolla spelarens x och y, hitta samma dörr
+                    if get_one_colliding_object(player, doors[0]):
+                        player['x'] = wall_size * 10
+                        player['y'] = wall_size * 9
+                        is_outside_door = False
+                    elif get_one_colliding_object(player, doors[1]):
+                        player['x'] = wall_size * 5
+                        player['y'] = wall_size * 5
+                        is_outside_door = False
+            else:
+                # utanför dörr
+                is_outside_door = True
 
         else:
             # snap player to grid
@@ -233,6 +300,9 @@ while is_running:
 
         for door in doors:
             screen.blit(door_image, (door['x'], door['y']))
+        
+        for ogre in ogres:
+            screen.blit(ogre_image, (ogre['x'], ogre['y']))
 
         screen.blit(player_image, (player['x'], player['y']))
 

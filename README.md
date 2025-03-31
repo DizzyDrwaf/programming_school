@@ -32,3 +32,7 @@ och börjat med och gjoprt klat pelican spelaet / collision [pygame_5](pygame/py
 idag har jag lärt mig mer om hur man använder listor och dictionary för att lägga till felar av samma sak i pygame [pygame_5](pygame/pygame_5.py)
 samt lärt mig att bettre läsa igenom koden och skapa en mer djup uppfatning av den [pygame_6](/pygame/pygame_6.py)
 ---------
+25-03-31
+lärt mig mer om hur colition hanteras av pygame och hur man kan använda detta till att förflyta spelaren mellen två dörrar [pygame_6](/pygame/pygame_6.py)
+försökte också lägga till ogren men fick inte blits att fungera på den
+---------
