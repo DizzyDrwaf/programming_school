@@ -44,6 +44,73 @@ def get_one_colliding_object(object_1, objects):
         return objects
     return None
 
+def make_maze(maze_content, wall_size):
+    walls = []
+
+    door_size = door_image.get_width()
+    doors = []
+
+    chrystal_size = chrystal_image.get_width()
+    chrystals = []
+
+    ogre_size = ogre_image.get_width()
+    ogres = []
+
+    # Create the player
+    player = {}
+    player['image'] = player_image
+    player['speed'] = 4
+    maze_content['player'] = player
+    maze_content['walls'] = walls
+    maze_content['crystals'] = chrystals
+    maze_content['doors'] = doors
+    maze_content['ogres'] = ogres
+    file = open('pygame/maze.txt', 'r')
+    line = file.readline()
+    maze_width = len(line) - 1  # Do not count the newline character.
+    maze_height = 0
+    x = 0
+    y = 0
+    while len(line) > 1:
+        maze_height += 1
+        for char in line:
+            if char == 'x':
+                wall = {}
+                wall['x'] = x
+                wall['y'] = y
+                wall['image'] = wall_image
+                maze_content['walls'].append(wall)
+            elif char == 'e':
+                maze_content['player']['x'] = x
+                maze_content['player']['y'] = y
+            elif char == 'c':
+                crystal = {}
+                crystal['x'] = x
+                crystal['y'] = y
+                crystal['image'] = chrystal_image
+                maze_content['crystals'].append(crystal)
+            elif char == 'd':
+                door = {}
+                door['x'] = x
+                door['y'] = y
+                door['image'] = door_image
+                maze_content['doors'].append(door)
+            elif char == 'o':
+                ogre = {}
+                ogre['x'] = x
+                ogre['y'] = y
+                ogre['image'] = ogre_image
+                maze_content['ogres'].append(ogre)
+
+            x += wall_size
+        x = 0
+        y += wall_size
+
+
+        line = file.readline()
+ 
+    file.close()
+    return( (maze_width * wall_size, maze_height * wall_size) )
 
 # --- Initialize Pygame
 pygame.init()
@@ -66,74 +133,62 @@ YELLOW = (255, 255, 0)
 # Add visual elements to the game
 
 wall_size = wall_image.get_width()
-walls = []
 
-door_size = door_image.get_width()
-doors = []
-
-chrystal_size = chrystal_image.get_width()
-chrystals = []
-
-ogre_size = ogre_image.get_width()
-ogres = []
-
-# Create the player
-player = {}
-player['image'] = player_image
-player['speed'] = 4
 
 # Read the maze from the file.
 
-file = open('pygame/maze.txt', 'r')
-line = file.readline()
-maze_width = len(line) - 1  # Do not count the newline character.
-maze_height = 0
-x = 0
-y = 0
-while len(line) > 1:
-    maze_height += 1
-    for char in line:
-        if char == 'x':
-            wall = {}
-            wall['x'] = x
-            wall['y'] = y
-            wall['image'] = wall_image
-            walls.append(wall)
-        elif char == 'e':
-            player['x'] = x
-            player['y'] = y
-        elif char == 'c':
-            crystal = {}
-            crystal['x'] = x
-            crystal['y'] = y
-            crystal['image'] = chrystal_image
-            chrystals.append(crystal)
-        elif char == 'd':
-            door = {}
-            door['x'] = x
-            door['y'] = y
-            door['image'] = door_image
-            doors.append(door)
-        elif char == 'o':
-            ogre = {}
-            ogre['x'] = x
-            ogre['y'] = y
-            ogre['image'] = ogre_image
-            ogres.append(ogre)
-
-        x += wall_size
-    x = 0
-    y += wall_size
-    line = file.readline()
-
-file.close()
+#file = open('pygame/maze.txt', 'r')
+#line = file.readline()
+#maze_width = len(line) - 1  # Do not count the newline character.
+#maze_height = 0
+#x = 0
+#y = 0
+#while len(line) > 1:
+#    maze_height += 1
+#    for char in line:
+#        if char == 'x':
+#            wall = {}
+#            wall['x'] = x
+#            wall['y'] = y
+#            wall['image'] = wall_image
+#            walls.append(wall)
+#        elif char == 'e':
+#            maze_content['player']['x'] = x
+#            maze_content['player']['y'] = y
+#        elif char == 'c':
+#            crystal = {}
+#            crystal['x'] = x
+#            crystal['y'] = y
+#            crystal['image'] = chrystal_image
+#            chrystals.append(crystal)
+#        elif char == 'd':
+#            door = {}
+#            door['x'] = x
+#            door['y'] = y
+#            door['image'] = door_image
+#            doors.append(door)
+#        elif char == 'o':
+#            ogre = {}
+#            ogre['x'] = x
+#            ogre['y'] = y
+#            ogre['image'] = ogre_image
+#            ogres.append(ogre)
+#
+#        x += wall_size
+#    x = 0
+#    y += wall_size
+#    line = file.readline()
+#
+#file.close()
 
 # --- player starting direction ---
 
 player_last_direction = "left"
+# --- variable ---
 
+maze_content = {}
 # --- score --- 
-
+size = make_maze(maze_content, wall_size)
 score = 0
 font = pygame.font.Font(None, 36)
 
@@ -141,8 +196,8 @@ last_door = "top"
 is_outside_door = True
 
 # --- Set the width and height of the screen [width, height]
-size = (maze_width * wall_size, maze_height * wall_size)
-screen = pygame.display.set_mode(size)
+#size = (maze_width_list[0] * wall_size, maze_height_list[0] * wall_size)
+screen = pygame.display.set_mode(size) # maze_size * wall_size
 
 pygame.display.set_caption("Maze Game")
 
@@ -165,29 +220,29 @@ while is_running:
         
 
         # --- Move the player
-        if score == 5:
+        if score == 7:
             game_is_pause = True
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT]:
-            player['x'] -= player['speed']
-            if get_one_colliding_objects(player, walls):
-                player['x'] += player['speed']
+            maze_content['player']['x'] -= maze_content['player']['speed']
+            if get_one_colliding_objects(maze_content['player'], maze_content['walls']):
+                maze_content['player']['x'] += maze_content['player']['speed']
 
-            elif get_one_colliding_objects(player, chrystals):
+            elif get_one_colliding_objects(maze_content['player'], maze_content['crystals']):
                 score += 1
-                chrystals.remove(get_one_colliding_objects(player, chrystals))
+                maze_content['crystals'].remove(get_one_colliding_objects(maze_content['player'], maze_content['crystals']))
 
-            elif get_one_colliding_objects(player, doors):
+            elif get_one_colliding_objects(maze_content['player'], maze_content['doors']):
                 if is_outside_door == True:
                     is_outside_door = False
                     # kolla spelarens x och y, hitta samma dörr
-                    if get_one_colliding_object(player, doors[0]):
-                        player['x'] = wall_size * 10
-                        player['y'] = wall_size * 9
+                    if get_one_colliding_object(maze_content['player'], maze_content['doors'][0]):
+                        maze_content['player']['x'] = wall_size * 10
+                        maze_content['player']['y'] = wall_size * 9
                         is_outside_door = False
-                    elif get_one_colliding_object(player, doors[1]):
-                        player['x'] = wall_size * 5
-                        player['y'] = wall_size * 5
+                    elif get_one_colliding_object(maze_content['player'], maze_content['doors'][1]):
+                        maze_content['player']['x'] = wall_size * 5
+                        maze_content['player']['y'] = wall_size * 5
                         is_outside_door = False
             else:
                 # utanför dörr
@@ -198,25 +253,25 @@ while is_running:
                 player_last_direction = "left"
 
         elif keys[pygame.K_RIGHT]:
-            player['x'] += player['speed']
-            if get_one_colliding_objects(player, walls):
-                player['x'] -= player['speed']
+            maze_content['player']['x'] += maze_content['player']['speed']
+            if get_one_colliding_objects(maze_content['player'], maze_content['walls']):
+                maze_content['player']['x'] -= maze_content['player']['speed']
 
-            elif get_one_colliding_objects(player, chrystals):
+            elif get_one_colliding_objects(maze_content['player'], maze_content['crystals']):
                 score += 1
-                chrystals.remove(get_one_colliding_objects(player, chrystals))
+                maze_content['crystals'].remove(get_one_colliding_objects(maze_content['player'], maze_content['crystals']))
 
-            elif get_one_colliding_objects(player, doors):
+            elif get_one_colliding_objects(maze_content['player'], maze_content['doors']):
                 if is_outside_door == True:
                     is_outside_door = False
                     # kolla spelarens x och y, hitta samma dörr
-                    if get_one_colliding_object(player, doors[0]):
-                        player['x'] = wall_size * 10
-                        player['y'] = wall_size * 9
+                    if get_one_colliding_object(maze_content['player'], maze_content['doors'][0]):
+                        maze_content['player']['x'] = wall_size * 10
+                        maze_content['player']['y'] = wall_size * 9
                         is_outside_door = False
-                    elif get_one_colliding_object(player, doors[1]):
-                        player['x'] = wall_size * 5
-                        player['y'] = wall_size * 5
+                    elif get_one_colliding_object(maze_content['player'], maze_content['doors'][1]):
+                        maze_content['player']['x'] = wall_size * 5
+                        maze_content['player']['y'] = wall_size * 5
                         is_outside_door = False
             else:
                 # utanför dörr
@@ -227,50 +282,50 @@ while is_running:
                 player_last_direction = "right"
 
         elif keys[pygame.K_UP]:
-            player['y'] -= player['speed']
-            if get_one_colliding_objects(player, walls):
-                player['y'] += player['speed']
+            maze_content['player']['y'] -= maze_content['player']['speed']
+            if get_one_colliding_objects(maze_content['player'], maze_content['walls']):
+                maze_content['player']['y'] += maze_content['player']['speed']
 
-            elif get_one_colliding_objects(player, chrystals):
+            elif get_one_colliding_objects(maze_content['player'], maze_content['crystals']):
                 score += 1
-                chrystals.remove(get_one_colliding_objects(player, chrystals))
+                maze_content['crystals'].remove(get_one_colliding_objects(maze_content['player'], maze_content['crystals']))
 
-            elif get_one_colliding_objects(player, doors):
+            elif get_one_colliding_objects(maze_content['player'], maze_content['doors']):
                 if is_outside_door == True:
                     is_outside_door = False
                     # kolla spelarens x och y, hitta samma dörr
-                    if get_one_colliding_object(player, doors[0]):
-                        player['x'] = wall_size * 10
-                        player['y'] = wall_size * 9
+                    if get_one_colliding_object(maze_content['player'], maze_content['doors'][0]):
+                        maze_content['player']['x'] = wall_size * 10
+                        maze_content['player']['y'] = wall_size * 9
                         is_outside_door = False
-                    elif get_one_colliding_object(player, doors[1]):
-                        player['x'] = wall_size * 5
-                        player['y'] = wall_size * 5
+                    elif get_one_colliding_object(maze_content['player'], maze_content['doors'][1]):
+                        maze_content['player']['x'] = wall_size * 5
+                        maze_content['player']['y'] = wall_size * 5
                         is_outside_door = False
             else:
                 # utanför dörr
                 is_outside_door = True
 
         elif keys[pygame.K_DOWN]:
-            player['y'] += player['speed']
-            if get_one_colliding_objects(player, walls):
-                player['y'] -= player['speed']
+            maze_content['player']['y'] += maze_content['player']['speed']
+            if get_one_colliding_objects(maze_content['player'], maze_content['walls']):
+                maze_content['player']['y'] -= maze_content['player']['speed']
 
-            elif get_one_colliding_objects(player, chrystals):
+            elif get_one_colliding_objects(maze_content['player'], maze_content['crystals']):
                 score += 1
-                chrystals.remove(get_one_colliding_objects(player, chrystals))
+                maze_content['crystals'].remove(get_one_colliding_objects(maze_content['player'], maze_content['crystals']))
 
-            elif get_one_colliding_objects(player, doors):
+            elif get_one_colliding_objects(maze_content['player'], maze_content['doors']):
                 if is_outside_door == True:
                     is_outside_door = False
                     # kolla spelarens x och y, hitta samma dörr
-                    if get_one_colliding_object(player, doors[0]):
-                        player['x'] = wall_size * 10
-                        player['y'] = wall_size * 9
+                    if get_one_colliding_object(maze_content['player'], maze_content['doors'][0]):
+                        maze_content['player']['x'] = wall_size * 10
+                        maze_content['player']['y'] = wall_size * 9
                         is_outside_door = False
-                    elif get_one_colliding_object(player, doors[1]):
-                        player['x'] = wall_size * 5
-                        player['y'] = wall_size * 5
+                    elif get_one_colliding_object(maze_content['player'], maze_content['doors'][1]):
+                        maze_content['player']['x'] = wall_size * 5
+                        maze_content['player']['y'] = wall_size * 5
                         is_outside_door = False
             else:
                 # utanför dörr
@@ -278,8 +333,8 @@ while is_running:
 
         else:
             # snap player to grid
-            player['x'] = round(player['x'] / wall_size) * wall_size
-            player['y'] = round(player['y'] / wall_size) * wall_size
+            maze_content['player']['x'] = round(maze_content['player']['x'] / wall_size) * wall_size
+            maze_content['player']['y'] = round(maze_content['player']['y'] / wall_size) * wall_size
 
 
 
@@ -292,23 +347,23 @@ while is_running:
             for x in range(0, size[0], wall_size):
                 screen.blit(sand_image, (x, y))
         # --- Drawing code should go here
-        for wall in walls:
+        for wall in maze_content['walls']:
             screen.blit(wall_image, (wall['x'], wall['y']))
 
-        for crystal in chrystals:
+        for crystal in maze_content['crystals']:
             screen.blit(chrystal_image, (crystal['x'], crystal['y']))
 
-        for door in doors:
+        for door in maze_content['doors']:
             screen.blit(door_image, (door['x'], door['y']))
         
-        for ogre in ogres:
+        for ogre in maze_content['ogres']:
             screen.blit(ogre_image, (ogre['x'], ogre['y']))
 
-        screen.blit(player_image, (player['x'], player['y']))
-
+        screen.blit(player_image, (maze_content['player']['x'], maze_content['player']['y']))
+        #screen.blit(maze_content)
         screen.blit(font.render("Score: " + str(score), True, WHITE), [5, 5])
 
-        if score == 5 and game_is_pause == True:
+        if score == 7 and game_is_pause == True:
             screen.blit(font.render("You Win!!!!", True, WHITE), [(wall_size * 4) + (wall_size * 0.5), (wall_size * 6) - (wall_size * 0.5)])
             screen.blit(font.render("Press Return to play again", True, WHITE), [(wall_size * 1) + (wall_size * 0.75), (wall_size * 7) - (wall_size * 0.5)])
 

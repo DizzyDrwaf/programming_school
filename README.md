@@ -9,7 +9,7 @@ börjat med [black_jack](/porject_programing/black_jack.py)
 25-01-20
 arbetade med [black_jack](/porject_programing/black_jack.py).
 ---------
-25-02-1
+25-02-01
 gjorde klart spelet så det är fult spelbart men har ingen att beta med än [black_jack](/porject_programing/black_jack.py)
 ---------
 25-02-04
@@ -35,4 +35,8 @@ samt lärt mig att bettre läsa igenom koden och skapa en mer djup uppfatning av
 25-03-31
 lärt mig mer om hur colition hanteras av pygame och hur man kan använda detta till att förflyta spelaren mellen två dörrar [pygame_6](/pygame/pygame_6.py)
 försökte också lägga till ogren men fick inte blits att fungera på den
+---------
+25-04-07
+har bygt om hut man skapar mazen till en funcstion så man kan starta om spelet men har inte lagt till start om funkstionen än. [pygame_6](/pygame/pygame_6.py)
+har lärt mig mer om dictionarys förstår dem mycket bättre.
 ---------
