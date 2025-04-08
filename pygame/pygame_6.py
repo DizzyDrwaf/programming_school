@@ -372,7 +372,10 @@ while is_running:
         clock.tick(60)  # 60 frames per second
     keys = pygame.key.get_pressed()
     if keys[pygame.K_RETURN]:
+        if game_is_pause == True and score == 7:
+            score = 0
+            make_maze(maze_content, wall_size)
         game_is_pause = False
-        score = 0
+        
 # Clean up when the game exits.
 pygame.quit()
