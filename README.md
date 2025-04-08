@@ -40,3 +40,5 @@ försökte också lägga till ogren men fick inte blits att fungera på den
 har bygt om hut man skapar mazen till en funcstion så man kan starta om spelet men har inte lagt till start om funkstionen än. [pygame_6](/pygame/pygame_6.py)
 har lärt mig mer om dictionarys förstår dem mycket bättre.
 ---------
+25-04-08
+har jobbat med att få ogres till att röra sig själva fick en att göra det men har inte lyckats att få alla att röra sig [pygame_6](/pygame/pygame_6.py)
