@@ -6,7 +6,7 @@ x x xxxxx x x
 x c xd e  x x
 x x     x   x
 x x xxxxx x x
-x x       x x
+x x   o   xox
 x xxx x xxd x
 xc    c    cx
 xxxxxxxxxxxxx

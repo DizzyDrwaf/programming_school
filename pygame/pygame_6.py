@@ -55,6 +55,7 @@ def make_maze(maze_content, wall_size):
 
     ogre_size = ogre_image.get_width()
     ogres = []
+    
 
     # Create the player
     player = {}
@@ -101,6 +102,8 @@ def make_maze(maze_content, wall_size):
                 ogre['y'] = y
                 ogre['speed'] = wall_size / 60
                 ogre['image'] = ogre_image
+                ogre['direction'] = 0
+                ogre['movment'] = 0
                 maze_content['ogres'].append(ogre)
 
             x += wall_size
@@ -112,6 +115,35 @@ def make_maze(maze_content, wall_size):
  
     file.close()
     return( (maze_width * wall_size, maze_height * wall_size) )
+
+
+def make_ogre_move(nr_ogre):
+        if maze_content['ogres'][nr_ogre]['movment'] == 0:
+            maze_content['ogres'][nr_ogre]['x'] = round(maze_content['ogres'][nr_ogre]['x'] / wall_size) * wall_size
+            maze_content['ogres'][nr_ogre]['y'] = round(maze_content['ogres'][nr_ogre]['y'] / wall_size) * wall_size
+            maze_content['ogres'][nr_ogre]['direction'] = random.randint(1, 4)
+            maze_content['ogres'][nr_ogre]['movment'] += 1
+        elif maze_content['ogres'][nr_ogre]['movment'] == 120:
+            maze_content['ogres'][nr_ogre]['movment'] = 0            
+        
+        if maze_content['ogres'][nr_ogre]['direction'] == 1:
+            maze_content['ogres'][nr_ogre]['y'] -= maze_content['ogres'][nr_ogre]['speed']
+            if get_one_colliding_objects(maze_content['ogres'][nr_ogre], maze_content['walls']):
+                maze_content['ogres'][nr_ogre]['y'] += maze_content['ogres'][nr_ogre]['speed']
+        elif maze_content['ogres'][nr_ogre]['direction'] == 2:
+            maze_content['ogres'][nr_ogre]['x'] += maze_content['ogres'][nr_ogre]['speed']
+            if get_one_colliding_objects(maze_content['ogres'][nr_ogre], maze_content['walls']):
+                maze_content['ogres'][nr_ogre]['x'] -= maze_content['ogres'][nr_ogre]['speed']
+        elif maze_content['ogres'][nr_ogre]['direction'] == 3:
+            maze_content['ogres'][nr_ogre]['y'] += maze_content['ogres'][nr_ogre]['speed']
+            if get_one_colliding_objects(maze_content['ogres'][nr_ogre], maze_content['walls']):
+                maze_content['ogres'][nr_ogre]['y'] -= maze_content['ogres'][nr_ogre]['speed']
+        elif maze_content['ogres'][nr_ogre]['direction'] == 4:
+            maze_content['ogres'][nr_ogre]['x'] -= maze_content['ogres'][nr_ogre]['speed']
+            if get_one_colliding_objects(maze_content['ogres'][nr_ogre], maze_content['walls']):
+                maze_content['ogres'][nr_ogre]['x'] += maze_content['ogres'][nr_ogre]['speed']
+        maze_content['ogres'][nr_ogre]['movment'] += 1
+
 
 # --- Initialize Pygame
 pygame.init()
@@ -187,7 +219,7 @@ wall_size = wall_image.get_width()
 player_last_direction = "left"
 # --- variable ---
 
-ogre_movment = 0
+
 maze_content = {}
 # --- score --- 
 size = make_maze(maze_content, wall_size)
@@ -341,32 +373,35 @@ while is_running:
 
 
         # --- ogre movment --- 
-        if ogre_movment == 0:
-            maze_content['ogres'][0]['x'] = round(maze_content['ogres'][0]['x'] / wall_size) * wall_size
-            maze_content['ogres'][0]['y'] = round(maze_content['ogres'][0]['y'] / wall_size) * wall_size
-            ogre_direcstion = random.randint(1, 4)
-            ogre_movment += 1
-        elif ogre_movment == 120:
-            ogre_movment = 0
-        else:
-            ogre_movment += 1
-        print(ogre_direcstion)
-        if ogre_direcstion == 1:
-            maze_content['ogres'][0]['y'] -= maze_content['ogres'][0]['speed']
-            if get_one_colliding_objects(maze_content['ogres'][0], maze_content['walls']):
-                maze_content['ogres'][0]['y'] += maze_content['ogres'][0]['speed']
-        elif ogre_direcstion == 2:
-            maze_content['ogres'][0]['x'] += maze_content['ogres'][0]['speed']
-            if get_one_colliding_objects(maze_content['ogres'][0], maze_content['walls']):
-                maze_content['ogres'][0]['x'] -= maze_content['ogres'][0]['speed']
-        elif ogre_direcstion == 3:
-            maze_content['ogres'][0]['y'] += maze_content['ogres'][0]['speed']
-            if get_one_colliding_objects(maze_content['ogres'][0], maze_content['walls']):
-                maze_content['ogres'][0]['y'] -= maze_content['ogres'][0]['speed']
-        elif ogre_direcstion == 4:
-            maze_content['ogres'][0]['x'] -= maze_content['ogres'][0]['speed']
-            if get_one_colliding_objects(maze_content['ogres'][0], maze_content['walls']):
-                maze_content['ogres'][0]['x'] += maze_content['ogres'][0]['speed']
+        for ogre_nr in range(3):
+            make_ogre_move(ogre_nr)
+        print(maze_content['ogres'][0]['direction'])
+#        if ogre_movment == 0:
+#            maze_content['ogres'][0]['x'] = round(maze_content['ogres'][0]['x'] / wall_size) * wall_size
+#            maze_content['ogres'][0]['y'] = round(maze_content['ogres'][0]['y'] / wall_size) * wall_size
+#            ogre_direcstion = random.randint(1, 4)
+#            ogre_movment += 1
+#        elif ogre_movment == 120:
+#            ogre_movment = 0
+#        else:
+#            ogre_movment += 1
+#        print(ogre_direcstion)
+#        if ogre_direcstion == 1:
+#            maze_content['ogres'][0]['y'] -= maze_content['ogres'][0]['speed']
+#            if get_one_colliding_objects(maze_content['ogres'][0], maze_content['walls']):
+#                maze_content['ogres'][0]['y'] += maze_content['ogres'][0]['speed']
+#        elif ogre_direcstion == 2:
+#            maze_content['ogres'][0]['x'] += maze_content['ogres'][0]['speed']
+#            if get_one_colliding_objects(maze_content['ogres'][0], maze_content['walls']):
+#                maze_content['ogres'][0]['x'] -= maze_content['ogres'][0]['speed']
+#        elif ogre_direcstion == 3:
+#            maze_content['ogres'][0]['y'] += maze_content['ogres'][0]['speed']
+#            if get_one_colliding_objects(maze_content['ogres'][0], maze_content['walls']):
+#                maze_content['ogres'][0]['y'] -= maze_content['ogres'][0]['speed']
+#        elif ogre_direcstion == 4:
+#            maze_content['ogres'][0]['x'] -= maze_content['ogres'][0]['speed']
+#            if get_one_colliding_objects(maze_content['ogres'][0], maze_content['walls']):
+#                maze_content['ogres'][0]['x'] += maze_content['ogres'][0]['speed']
 
 
         # --- Screen-clearing code goes here
