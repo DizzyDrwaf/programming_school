@@ -118,13 +118,18 @@ def make_maze(maze_content, wall_size):
 
 
 def make_ogre_move(nr_ogre):
+    # make_ogre_move(ogre):
+    # if ogre['movement'] == 0:
         if maze_content['ogres'][nr_ogre]['movment'] == 0:
             maze_content['ogres'][nr_ogre]['x'] = round(maze_content['ogres'][nr_ogre]['x'] / wall_size) * wall_size
             maze_content['ogres'][nr_ogre]['y'] = round(maze_content['ogres'][nr_ogre]['y'] / wall_size) * wall_size
             maze_content['ogres'][nr_ogre]['direction'] = random.randint(1, 4)
             maze_content['ogres'][nr_ogre]['movment'] += 1
+        elif maze_content['ogres'][nr_ogre]['movment'] < 120:
+            maze_content['ogres'][nr_ogre]['movment'] += 1 
         elif maze_content['ogres'][nr_ogre]['movment'] == 120:
-            maze_content['ogres'][nr_ogre]['movment'] = 0            
+            maze_content['ogres'][nr_ogre]['movment'] = 0   
+        
         
         if maze_content['ogres'][nr_ogre]['direction'] == 1:
             maze_content['ogres'][nr_ogre]['y'] -= maze_content['ogres'][nr_ogre]['speed']
@@ -142,7 +147,12 @@ def make_ogre_move(nr_ogre):
             maze_content['ogres'][nr_ogre]['x'] -= maze_content['ogres'][nr_ogre]['speed']
             if get_one_colliding_objects(maze_content['ogres'][nr_ogre], maze_content['walls']):
                 maze_content['ogres'][nr_ogre]['x'] += maze_content['ogres'][nr_ogre]['speed']
-        maze_content['ogres'][nr_ogre]['movment'] += 1
+
+def colliding_ogre_with_player():
+    if get_one_colliding_objects(maze_content['player'], maze_content['ogres']):
+        game_over = True
+        return game_over 
+       
 
 
 # --- Initialize Pygame
@@ -168,52 +178,6 @@ YELLOW = (255, 255, 0)
 wall_size = wall_image.get_width()
 
 
-# Read the maze from the file.
-
-#file = open('pygame/maze.txt', 'r')
-#line = file.readline()
-#maze_width = len(line) - 1  # Do not count the newline character.
-#maze_height = 0
-#x = 0
-#y = 0
-#while len(line) > 1:
-#    maze_height += 1
-#    for char in line:
-#        if char == 'x':
-#            wall = {}
-#            wall['x'] = x
-#            wall['y'] = y
-#            wall['image'] = wall_image
-#            walls.append(wall)
-#        elif char == 'e':
-#            maze_content['player']['x'] = x
-#            maze_content['player']['y'] = y
-#        elif char == 'c':
-#            crystal = {}
-#            crystal['x'] = x
-#            crystal['y'] = y
-#            crystal['image'] = chrystal_image
-#            chrystals.append(crystal)
-#        elif char == 'd':
-#            door = {}
-#            door['x'] = x
-#            door['y'] = y
-#            door['image'] = door_image
-#            doors.append(door)
-#        elif char == 'o':
-#            ogre = {}
-#            ogre['x'] = x
-#            ogre['y'] = y
-#            ogre['image'] = ogre_image
-#            ogres.append(ogre)
-#
-#        x += wall_size
-#    x = 0
-#    y += wall_size
-#    line = file.readline()
-#
-#file.close()
-
 # --- player starting direction ---
 
 player_last_direction = "left"
@@ -225,6 +189,8 @@ maze_content = {}
 size = make_maze(maze_content, wall_size)
 score = 0
 font = pygame.font.Font(None, 36)
+score_to_get = 7
+game_over = False
 
 last_door = "top"
 is_outside_door = True
@@ -254,7 +220,7 @@ while is_running:
         
 
         # --- Move the player
-        if score == 7:
+        if score == score_to_get:
             game_is_pause = True
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT]:
@@ -375,33 +341,13 @@ while is_running:
         # --- ogre movment --- 
         for ogre_nr in range(3):
             make_ogre_move(ogre_nr)
-        print(maze_content['ogres'][0]['direction'])
-#        if ogre_movment == 0:
-#            maze_content['ogres'][0]['x'] = round(maze_content['ogres'][0]['x'] / wall_size) * wall_size
-#            maze_content['ogres'][0]['y'] = round(maze_content['ogres'][0]['y'] / wall_size) * wall_size
-#            ogre_direcstion = random.randint(1, 4)
-#            ogre_movment += 1
-#        elif ogre_movment == 120:
-#            ogre_movment = 0
-#        else:
-#            ogre_movment += 1
-#        print(ogre_direcstion)
-#        if ogre_direcstion == 1:
-#            maze_content['ogres'][0]['y'] -= maze_content['ogres'][0]['speed']
-#            if get_one_colliding_objects(maze_content['ogres'][0], maze_content['walls']):
-#                maze_content['ogres'][0]['y'] += maze_content['ogres'][0]['speed']
-#        elif ogre_direcstion == 2:
-#            maze_content['ogres'][0]['x'] += maze_content['ogres'][0]['speed']
-#            if get_one_colliding_objects(maze_content['ogres'][0], maze_content['walls']):
-#                maze_content['ogres'][0]['x'] -= maze_content['ogres'][0]['speed']
-#        elif ogre_direcstion == 3:
-#            maze_content['ogres'][0]['y'] += maze_content['ogres'][0]['speed']
-#            if get_one_colliding_objects(maze_content['ogres'][0], maze_content['walls']):
-#                maze_content['ogres'][0]['y'] -= maze_content['ogres'][0]['speed']
-#        elif ogre_direcstion == 4:
-#            maze_content['ogres'][0]['x'] -= maze_content['ogres'][0]['speed']
-#            if get_one_colliding_objects(maze_content['ogres'][0], maze_content['walls']):
-#                maze_content['ogres'][0]['x'] += maze_content['ogres'][0]['speed']
+            game_over = colliding_ogre_with_player()
+        if game_over == True:
+            game_is_pause = True
+
+        #truble shooting--->
+        #print(maze_content['ogres'][0]['direction'],maze_content['ogres'][1]['direction'],maze_content['ogres'][0]['movment'], score)
+
 
 
         # --- Screen-clearing code goes here
@@ -426,16 +372,25 @@ while is_running:
         #screen.blit(maze_content)
         screen.blit(font.render("Score: " + str(score), True, WHITE), [5, 5])
 
-        if score == 7 and game_is_pause == True:
+        if score == score_to_get and game_is_pause == True:
             screen.blit(font.render("You Win!!!!", True, WHITE), [(wall_size * 4) + (wall_size * 0.5), (wall_size * 6) - (wall_size * 0.5)])
             screen.blit(font.render("Press Return to play again", True, WHITE), [(wall_size * 1) + (wall_size * 0.75), (wall_size * 7) - (wall_size * 0.5)])
+
+        if game_over == True and game_is_pause == True:
+            screen.blit(font.render("You lose :(", True, WHITE), [(wall_size * 4) + (wall_size * 0.5), (wall_size * 6) - (wall_size * 0.5)])
+            screen.blit(font.render("Press Return to try again", True, WHITE), [(wall_size * 1) + (wall_size * 0.75), (wall_size * 7) - (wall_size * 0.5)])
+
+
 
         pygame.display.update()  # or pygame.display.flip()
         # --- Increase game time
         clock.tick(60)  # 60 frames per second
     keys = pygame.key.get_pressed()
     if keys[pygame.K_RETURN]:
-        if game_is_pause == True and score == 7:
+        if game_is_pause == True and score == score_to_get:
+            score = 0
+            make_maze(maze_content, wall_size)
+        elif game_is_pause == True and game_over == True:
             score = 0
             make_maze(maze_content, wall_size)
         game_is_pause = False

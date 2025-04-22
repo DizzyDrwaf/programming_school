@@ -1,5 +1,8 @@
 Olivers Loggbok
 ===============
+25-04-22
+Har gjort klart spelet[pygame_6.py](/pygame/pygame_6.py) men har fortfarande fin putsning att gör på koden. lärt mig att lägga till endas 1 sak per funktion så att samma funktion inte gör felra saker. 
+-----------
 25-04-08
 Har jobbat med att få ogres att röra sig själva. Fick en att göra det, men har inte lyckats få alla att röra sig. [pygame_6](/pygame/pygame_6.py)
 ---------
