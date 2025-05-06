@@ -1,5 +1,8 @@
 Olivers Loggbok
 ===============
+25-05-06
+Jobbat med Twig/html.
+----------
 25-04-22
 Har gjort klart spelet[pygame_6.py](/pygame/pygame_6.py) men har fortfarande fin putsning att gör på koden. lärt mig att lägga till endas 1 sak per funktion så att samma funktion inte gör felra saker. 
 -----------
