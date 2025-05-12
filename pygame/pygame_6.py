@@ -100,7 +100,7 @@ def make_maze(maze_content, wall_size):
                 ogre = {}
                 ogre['x'] = x
                 ogre['y'] = y
-                ogre['speed'] = wall_size / 60
+                ogre['speed'] = wall_size / 30
                 ogre['image'] = ogre_image
                 ogre['direction'] = 0
                 ogre['movment'] = 0
